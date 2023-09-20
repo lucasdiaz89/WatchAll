@@ -3,8 +3,7 @@ import NavigateBar from "./components/NavigateBar"
 import Footer from "./components/Footer"
 
 function App() {
-  
-
+  let [onClickOutside, setShowInfo1] = useState(false);
   return (
     <>
       <NavigateBar/>
