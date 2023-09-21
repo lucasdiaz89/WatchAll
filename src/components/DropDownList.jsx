@@ -1,14 +1,19 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 function DropDownList(props) {
   const [isActive, setIsActive] = useState(false);
   const [isHoverDDL, setIsHoverDDL] = useState(false);
-  const refList = useRef(null);
+  const [urlLink, setUrLink] = useState(props.url);
+
+
 
   const nameMenu = props.nameMenu;
   const select = props.select;
   const setSelect = props.setSelect;
   const options = props.options;
+
+
+
 
   useEffect(() => {
     setIsActive(false);
@@ -20,20 +25,22 @@ function DropDownList(props) {
   const handlerIsHoverDDL = () => {
     setIsHoverDDL(!isHoverDDL);
   };
-  /*{document.addEventListener(`click`, (evt) => {
-    const cur = refList;
-    const node = evt.target;
-    refList.current && !refList.current.contains(evt.target)?setIsActive(false) : setIsActive(false);
+  useEffect(() => {
+    setIsHoverDDL(false)
+    console.log("cambio en DDL")
+  }, [urlLink]);
 
-  })}  */
+  const handleUrlLink  = (urlNew) => {
+    setUrLink(urlNew)
+  };
+
   return (
     <>
      
       <button onClick={() => handlerIsActive()}>{nameMenu}</button>
 
       {isActive && (
-        <div
-        ref={refList}        
+        <div      
           onMouseLeave={() => handlerIsHoverDDL()}
           id={nameMenu}
           className="fixed top-11 bg-white rounded-lg shadow dark:bg-gray-700 "
@@ -49,10 +56,10 @@ function DropDownList(props) {
               >
                 <a
                   onClick={() => {
-                    setSelect(options.id);
+                    props.setSelect(options.id);
                     setIsActive(false);
-                  }}
-                  href={options.link}
+                    handleUrlLink(options.link);
+                  }}                  
                   className="flex items-center px-2 py-2 "
                 >
                   {options.name}
