@@ -2,14 +2,12 @@
 import DropDownList from "./DropDownList";
 import ImageChangeTheme from "./ImageChangeTheme";
 import { FilmIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 
 function NavigateBar(props) {
 
 
-
-const [urlApi, setUrlApi] = useState(props.urlNew);
-
+const {url,updateUrl} = useContext(UrlContext);
   const [select, setSelect] = useState("");
   let CategoryGender = [
     { id: 1, name: "Terror", link: "/" },
@@ -45,11 +43,13 @@ const [urlApi, setUrlApi] = useState(props.urlNew);
 
   useEffect(()=>{
     console.log("llego a Navigate")
-  },[urlApi])
+  },[url])
   
   return (
     <>
-      <nav className="shadow-md w-full border border-slate-800 bg-slate-200 rounded-md dark:bg-slate-800 dark:border-slate-200">
+     <UrlContext.Provider value={{url,updateUrl}}>
+
+     <nav className="shadow-md w-full border border-slate-800 bg-slate-200 rounded-md dark:bg-slate-800 dark:border-slate-200">
         <div className="md:px10 py-4 px-7 md:flex justify-between item-center">
           <div className="flex text-2x1 cursor-pointer items-center gap-2">
             <FilmIcon className="w-7 h-7 text-slate-800 dark:text-emerald-400" />
@@ -72,8 +72,8 @@ const [urlApi, setUrlApi] = useState(props.urlNew);
                       (el) => el.categoryTypeId === menu.categoryTypeId
                     ).categoryObject
                   }
-                  url={urlApi}                  
-                  setUrl={setUrlApi}                  
+                  url={url}                  
+                                   
                 />
               </li>
             ))}
@@ -81,6 +81,9 @@ const [urlApi, setUrlApi] = useState(props.urlNew);
           <ImageChangeTheme />
         </div>
       </nav>
+
+     </UrlContext.Provider>
+     
     </>
   );
 }

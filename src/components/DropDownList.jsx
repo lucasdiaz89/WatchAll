@@ -1,11 +1,9 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState,useContext } from "react";
 
 function DropDownList(props) {
   const [isActive, setIsActive] = useState(false);
   const [isHoverDDL, setIsHoverDDL] = useState(false);
-  const [urlLink, setUrLink] = useState(props.url);
-
-
+  const url = useContext(UserContext);
 
   const nameMenu = props.nameMenu;
   const select = props.select;
@@ -25,13 +23,10 @@ function DropDownList(props) {
   const handlerIsHoverDDL = () => {
     setIsHoverDDL(!isHoverDDL);
   };
-  useEffect(() => {
-    setIsHoverDDL(false)
-    console.log("cambio en DDL")
-  }, [urlLink]);
+ 
 
   const handleUrlLink  = (urlNew) => {
-    setUrLink(urlNew)
+    setUrLink(url)
   };
 
   return (
