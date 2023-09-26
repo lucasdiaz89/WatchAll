@@ -1,17 +1,15 @@
 import { useEffect, useState,useContext } from "react";
+import {ContextUrl} from "./StoreUrl";
 
 function DropDownList(props) {
   const [isActive, setIsActive] = useState(false);
   const [isHoverDDL, setIsHoverDDL] = useState(false);
-  const url = useContext(UserContext);
+  const [state,setState]=useContext(ContextUrl);
 
   const nameMenu = props.nameMenu;
   const select = props.select;
   const setSelect = props.setSelect;
   const options = props.options;
-
-
-
 
   useEffect(() => {
     setIsActive(false);
@@ -24,10 +22,11 @@ function DropDownList(props) {
     setIsHoverDDL(!isHoverDDL);
   };
  
+  const handleUrlLink =(urlNew)=>{
+    setState(urlNew)
+  }
 
-  const handleUrlLink  = (urlNew) => {
-    setUrLink(url)
-  };
+
 
   return (
     <>
@@ -38,7 +37,7 @@ function DropDownList(props) {
         <div      
           onMouseLeave={() => handlerIsHoverDDL()}
           id={nameMenu}
-          className="fixed top-11 bg-white rounded-lg shadow dark:bg-gray-700 "
+          className="fixed top-11 cursor-pointer bg-white rounded-lg shadow dark:bg-gray-700 "
         >
           <ul
             className="overflow-y-auto text-gray-700 dark:text-gray-200 "
@@ -53,7 +52,7 @@ function DropDownList(props) {
                   onClick={() => {
                     props.setSelect(options.id);
                     setIsActive(false);
-                    handleUrlLink(options.link);
+                    handleUrlLink(options);
                   }}                  
                   className="flex items-center px-2 py-2 "
                 >

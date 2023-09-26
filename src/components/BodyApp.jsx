@@ -1,12 +1,13 @@
+import { ContextUrl } from "./StoreUrl";
 import { useFetch } from "./useFetch";
 import { useContext } from "react";
 
 function BodyApp(props) {
-  console.log("bodyAPp");
-  const url = useContext(UrlContext);
-  console.log(url);
 
-  const { data, loading, error, handleCancelRequest } = useFetch(url);
+ const [stateLink,setStateLink]=useContext(ContextUrl); 
+
+
+  const { data, loading, error, handleCancelRequest } = useFetch(stateLink.url);
   return (
     <>
       <button onClick={handleCancelRequest}>Cancel Request</button>
@@ -14,7 +15,7 @@ function BodyApp(props) {
         {error && <li>Error: {error}</li>}
         {loading && <li>Loading...</li>}
         {data?.map((item) => (
-          <li key={item.id}>{item.title}</li>
+          <li key={item.id}>{item.id}</li>
         ))}
       </ul>
     </>

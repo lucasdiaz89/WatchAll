@@ -2,25 +2,25 @@
 import DropDownList from "./DropDownList";
 import ImageChangeTheme from "./ImageChangeTheme";
 import { FilmIcon } from "@heroicons/react/24/solid";
-import { useEffect, useState,useContext } from "react";
+import {  useState } from "react";
+
 
 function NavigateBar(props) {
 
 
-const {url,updateUrl} = useContext(UrlContext);
   const [select, setSelect] = useState("");
   let CategoryGender = [
-    { id: 1, name: "Terror", link: "/" },
-    { id: 2, name: "Romantic", link: "/" },
-    { id: 3, name: "Funny", link: "/" },
-    { id: 4, name: "Drama", link: "/" },
+    { id: 1, name: "Terror", url: "" },
+    { id: 2, name: "Romantic", url: "" },
+    { id: 3, name: "Funny", url: "" },
+    { id: 4, name: "Drama", url: "" },
   ];
   let CategoryStreaming  = [
-    { id: 1, name: "Netflix", link: "https://jsonplaceholder.typicode.com/todos" },
-    { id: 2, name: "HBO MAX", link: "hbomax.com" },
-    { id: 3, name: "Star+", link: "/" },
-    { id: 4, name: "Disney+", link: "/" },
-    { id: 5, name: "Prime Video", link: "/" },
+    { id: 1, name: "Netflix", url: "https://jsonplaceholder.typicode.com/todos" },
+    { id: 2, name: "HBO MAX", url: "" },
+    { id: 3, name: "Star+", url: "" },
+    { id: 4, name: "Disney+", url: "" },
+    { id: 5, name: "Prime Video", url: "" },
   ];
   let CategoryType = [
     {
@@ -41,13 +41,10 @@ const {url,updateUrl} = useContext(UrlContext);
     { menuId: 4, name: "Streaming", categoryTypeId: 2 },
   ];
 
-  useEffect(()=>{
-    console.log("llego a Navigate")
-  },[url])
   
   return (
     <>
-     <UrlContext.Provider value={{url,updateUrl}}>
+
 
      <nav className="shadow-md w-full border border-slate-800 bg-slate-200 rounded-md dark:bg-slate-800 dark:border-slate-200">
         <div className="md:px10 py-4 px-7 md:flex justify-between item-center">
@@ -71,8 +68,7 @@ const {url,updateUrl} = useContext(UrlContext);
                     CategoryType.find(
                       (el) => el.categoryTypeId === menu.categoryTypeId
                     ).categoryObject
-                  }
-                  url={url}                  
+                  }               
                                    
                 />
               </li>
@@ -82,8 +78,6 @@ const {url,updateUrl} = useContext(UrlContext);
         </div>
       </nav>
 
-     </UrlContext.Provider>
-     
     </>
   );
 }
