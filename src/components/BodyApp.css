@@ -1,0 +1,18 @@
+.blurred-movie {
+    filter: blur(5px); /* Aplicar un desenfoque inicial */
+    opacity: 1; /* Reducir la opacidad para resaltar las películas completas */
+    transition: filter 0.5s, opacity 0.5s; /* Agregar una transición suave */
+  }
+  
+  /* Estilo cuando el desenfoque se elimina al hacer scroll */
+  .blurred-movie.scroll-visible {
+    filter: blur(0px); /* Eliminar el desenfoque */
+    opacity: 1; /* Restaurar la opacidad completa */
+  }
+
+  @media (min-width: 1024px) {
+    .lg\:w-1\/3 {
+      width: 16.333333%;
+    }
+  }
+ 

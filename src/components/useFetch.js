@@ -1,44 +1,43 @@
 import { useState, useEffect } from "react";
 
-export function useFetch(url) {
-  const [data, setData] = useState(null);
+export function useFetch(Api) {
+  const [data, setData] = useState({ results: [] });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-  const [controller, setController] = useState(null);
-const errorComingSoon="";
+  const errorComingSoon="";
+
+  const options = {
+    method: 'GET',
+    headers: {
+      accept: 'application/json',
+      Authorization: Api.headerKey
+    }
+  };
+
+
   useEffect(() => {
-    const abortController = new AbortController();
-    setController(abortController);
-    if (url != "") {
-      fetch(url, { signal: abortController.signal })
+    if (Api.url != "") {
+      fetch(Api.url, options)
         .then((response) => response.json())
         .then((json) => setData(json))
-        .catch((error) => {
-          if (error.name != "AbortError") {
-            setError(error);
-          }
+        .catch((error) => {         
+            setError(error);          
         })
         .finally(() => {
           setLoading(false)
           setError("")
-        });
-
-      return () => abortController.abort();
+        });      
     }
     else{
       setError("ComingSoon");
-      setData(null);
+      setData({ results: [] });
       setLoading(false);
     }
     
-  }, [url]);
+  }, [Api]);
 
-  const handleCancelRequest = () => {
-    if (controller) {
-      controller.abort();
-      setError("Cancelled Request");
-    }
-  };
 
-  return { data, loading, error, handleCancelRequest };
+
+
+  return { data, loading, error };
 }

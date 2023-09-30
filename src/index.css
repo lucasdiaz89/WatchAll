@@ -2,6 +2,25 @@
 @tailwind components;
 @tailwind utilities;
 
+#root {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+  
+  /* Estilo para asegurarse de que el contenido se expanda y no se superponga al footer */
+  .main-content {
+    flex-grow: 1;
+  }
+  
 
+  
+  .app-container {
+     /* Esto asegura que el contenedor tenga al menos el 100% de la altura de la ventana gráfica (viewport) */
+     /* Ajusta este valor según sea necesario para evitar que el footer cubra el contenido */
+  }
+  
+  
+  
 
  
