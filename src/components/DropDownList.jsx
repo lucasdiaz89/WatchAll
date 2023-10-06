@@ -1,15 +1,18 @@
-import { useEffect, useState,useContext } from "react";
-import {ContextUrl} from "./StoreUrl";
+import { useEffect, useState, useContext } from "react";
+import { ContextUrl } from "./StoreUrl";
 
 function DropDownList(props) {
+
   const [isActive, setIsActive] = useState(false);
   const [isHoverDDL, setIsHoverDDL] = useState(false);
-  const [state,setState]=useContext(ContextUrl);
+  const [state, setState] = useContext(ContextUrl);
 
-  const nameMenu = props.nameMenu;
-  const select = props.select;
-  const setSelect = props.setSelect;
+  const menu = props.Menu;
   const options = props.options;
+  const urlLink = props.url;
+
+  console.log("DDL link props");
+  console.log(urlLink);
 
   useEffect(() => {
     setIsActive(false);
@@ -21,23 +24,40 @@ function DropDownList(props) {
   const handlerIsHoverDDL = () => {
     setIsHoverDDL(!isHoverDDL);
   };
- 
-  const handleUrlLink =(urlNew)=>{
-    setState(urlNew)
-  }
 
-
+  const handleUrlLink = (urlNew, urlLink, menu) => {
+    console.log("handleURLink . urlNew urlLink . menu");
+    console.log(urlNew);
+    console.log(urlLink);
+    console.log(menu);
+    const urlChange = {
+      url: urlLink.urlFilter,
+      name: urlLink.filterUrlName,
+      categoryTypeName: menu.categoryTypeName,
+      categoryGenderId: urlNew.categoryGenderId,
+      params: {
+        include_adult: urlLink.filterUrlParams.include_adult,
+        include_video: urlLink.filterUrlParams.include_video,
+        language: urlLink.filterUrlParams.language,
+        page: urlLink.filterUrlParams.page,
+        sort_by: urlLink.filterUrlParams.sort_by,
+        whit_genres:  urlNew.categoryGenderId  
+      },
+      urlImage: urlLink.filterUrlImage,
+      headerKey:urlLink.filterHeaderKey,
+    };
+    setState(urlChange);
+  };
 
   return (
     <>
-     
-      <button onClick={() => handlerIsActive()}>{nameMenu}</button>
+      <button onClick={() => handlerIsActive()}>{menu.name}</button>
 
       {isActive && (
-        <div      
+        <div
           onMouseLeave={() => handlerIsHoverDDL()}
-          id={nameMenu}
-          className="fixed top-11 cursor-pointer bg-white rounded-lg shadow dark:bg-gray-700 "
+          id={menu.menuId}
+          className="fixed top-11 cursor-pointer absolute z-10 bg-white rounded-lg shadow dark:bg-gray-700 "
         >
           <ul
             className="overflow-y-auto text-gray-700 dark:text-gray-200 "
@@ -50,10 +70,9 @@ function DropDownList(props) {
               >
                 <a
                   onClick={() => {
-                    props.setSelect(options.id);
                     setIsActive(false);
-                    handleUrlLink(options);
-                  }}                  
+                    handleUrlLink(options, urlLink, menu);
+                  }}
                   className="flex items-center px-2 py-2 "
                 >
                   {options.name}

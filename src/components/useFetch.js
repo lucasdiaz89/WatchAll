@@ -1,43 +1,55 @@
 import { useState, useEffect } from "react";
 
-export function useFetch(Api) {
-  const [data, setData] = useState({ results: [] });
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
-  const errorComingSoon="";
-
-  const options = {
-    method: 'GET',
-    headers: {
-      accept: 'application/json',
-      Authorization: Api.headerKey
-    }
-  };
-
-
+export function useFetch(stateLink) {
+  const [data, setData] = useState({ results: [] });  
+  const [loadingApi, setLoadingApi] = useState(true);
+  const [errorApi, setErrorApi] = useState(null);
+  const errorComingSoon = "";
+ 
   useEffect(() => {
-    if (Api.url != "") {
-      fetch(Api.url, options)
-        .then((response) => response.json())
-        .then((json) => setData(json))
-        .catch((error) => {         
-            setError(error);          
-        })
-        .finally(() => {
-          setLoading(false)
-          setError("")
-        });      
-    }
-    else{
-      setError("ComingSoon");
-      setData({ results: [] });
-      setLoading(false);
-    }
+
+    console.log("entra al useEfect Fetch");
     
-  }, [Api]);
+    const options = {
+      method: "GET",
+      headers: {
+        accept: "application/json",
+        Authorization: stateLink.headerKey,
+      },
+    };
+    
+    stateLink.params.whit_genres = stateLink.categoryGenderId;
+    
+    const newUrl =`${stateLink.url}${stateLink.categoryTypeName}?${new URLSearchParams(stateLink.params)}`;
+    setData({ results: [] });
 
+    if (newUrl !=null) {
+      const delay = 3000;
+      
+      setLoadingApi(true);
+      const fetchData = () => {
+        setData({ results: [] });
+        fetch(newUrl, options)
+          .then((response) => response.json())
+          .then((json) => {
+            setData(json);
+            setLoadingApi(false);
+            setErrorApi("");
+          })
+          .catch((error) => {
+            setErrorApi(errorApi);
+            setLoadingApi(false);
+          });
+      };
+      console.log(data)
+      const timeoutId = setTimeout(fetchData, delay);
+      return () => clearTimeout(timeoutId);
+    } else {
+      setErrorApi("ComingSoon");
+      setData({ results: [] });
+      setLoadingApi(false);
+    }
+  }, [stateLink]);
 
-
-
-  return { data, loading, error };
+  return { data, loadingApi, errorApi };
 }

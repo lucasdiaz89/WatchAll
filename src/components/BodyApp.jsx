@@ -3,112 +3,166 @@ import { useFetch } from "./useFetch";
 import Cards from "./Cards";
 import { useContext, useEffect, useState, useRef } from "react";
 import "./BodyApp.css";
-import {ArrowRightCircleIcon,ArrowLeftCircleIcon } from "@heroicons/react/24/solid";
+import {
+  ArrowRightCircleIcon,
+  ArrowLeftCircleIcon,
+} from "@heroicons/react/24/solid";
+import Loading from "./Loading";
 
 function BodyApp(props) {
   const containerRef = useRef(null);
+  const searchRef = useRef("");
   const [stateLink, setStateLink] = useContext(ContextUrl);
-  const { data, loading, error } = useFetch(stateLink);
+console.log("stateLink");
+  console.log(stateLink);
+  const { data, loadingApi, errorApi } = useFetch(stateLink);
   const [currentPage, setCurrentPage] = useState(1);
-  const pageSize = 12;
 
-  // Mantén todas las películas en un solo arreglo
-  const allMovies = data.results;
+  const pageSize = 20;
+  const totalPageApi=data.total_pages;
 
-  // Calcula los índices de inicio y finalización para la página actual
+  const [dataApi, setDataApi] = useState(data.results);
+  const [filterDataApi, setFilterDataApi] = useState([]);
+  const actualPage=data.page;
+  let previousPage=0;
+  let nextPage=0;
+
+  if(totalPageApi>1){
+    previousPage=actualPage-1;
+    nextPage=actualPage+1;
+  }
+ 
+
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
+  const dataToShow = filterDataApi.slice(startIndex, endIndex);
 
-  // Filtra los datos para mostrar solo los de la página actual
-  const dataToShow = allMovies.slice(startIndex, endIndex);
+  const hasNextPage = endIndex < filterDataApi.length;
+  const hasPreviousPage = currentPage > 1;
 
-  // Maneja el cambio de página
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
   };
 
-  // Verifica si hay contenido disponible para las páginas siguiente y anterior
-  const hasNextPage = endIndex < allMovies.length;
-  const hasPreviousPage = currentPage > 1;
+  useEffect(() => {
+    setFilterDataApi(data.results);
+    setDataApi(data.results);
+  }, [loadingApi]);
 
-  // Maneja el efecto de desenfoque al hacer scroll
+  useEffect(() => {
+    searchRef.current.value="";
+  }, [dataApi]);
+
   useEffect(() => {
     const handleScroll = () => {
-      if (
-        containerRef.current &&
-        window.innerHeight + window.scrollY >= containerRef.current.offsetHeight
-      ) {
-        // El usuario ha llegado al final, muestra gradualmente las películas desenfocadas
-        const blurredMovies =
-          containerRef.current.querySelectorAll(".blurred-movie");
-        blurredMovies.forEach((el) => {
+      const blurredMovies = containerRef.current.querySelectorAll(
+        ".blurred-movie:not(.blurred)"
+      );
+      blurredMovies.forEach((el) => {
+        const rect = el.getBoundingClientRect();
+        const threshold = window.innerHeight * 0.5;
+        if (rect.top <= threshold) {
           el.style.filter = "blur(0px)";
-        });
-      }
+          el.classList.add("blurred");
+        }
+      });
     };
 
     window.addEventListener("scroll", handleScroll);
-    // Inicialmente, aplica desenfoque a todas las películas excepto las primeras 5
-    containerRef.current
-      .querySelectorAll(".blurred-movie:not(.blurred)")
-      .forEach((el) => {
-        el.style.opacity = 0;
-      });
+
+    const initiallyFocusedMovies =
+      containerRef.current.querySelectorAll(".blurred-movie");
+
+    initiallyFocusedMovies.forEach((el) => {
+      el.style.filter = "blur(7px)";
+      el.classList.add("blurred");
+    });
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
     };
   }, []);
 
+  const loadingCards = Array.from({ length: pageSize }, (_, index) => (
+    <Loading index />
+  ));
+
+  const handlerFilter = (value) => {
+    if (value === "") {
+      setFilterDataApi(dataApi);
+    } else {
+      const leakedData = dataApi.filter((valor) => {
+        const titleOrName = valor.title || valor.name || "";
+        return titleOrName.toUpperCase().includes(value.toUpperCase());
+      });
+      setFilterDataApi(leakedData);
+      const allMovies = containerRef.current.querySelectorAll(".blurred-movie");
+      allMovies.forEach((el) => {
+        el.style.filter = "blur(0px)";
+        el.classList.remove("blurred");
+      });
+    }
+
+ 
+  };
+
   return (
     <div className="main-content">
       <div className="flex flex-col">
-        {/* Contenedor para elementos de película */}
-        <div className="movie-container" ref={containerRef}>
+        <div className="flex justify-center">
+          <div className="w-3/4">
+            <input ref={searchRef}
+              onChange={(e) => handlerFilter(e.target.value)}
+              type="search"
+              className="block w-full px-4 py-2 text-stone-200 bg-slate-800 border dark:text-stone-900 dark:bg-slate-200 rounded-xl focus:border-slate-800 focus:ring-slate-900 dark:focus:border-slate-400 dark:focus:ring-slate-400 focus:outline-none focus:ring focus:ring-opacity-40 text-center"
+              placeholder={`SEARCH YOU ${
+                stateLink.categoryTypeName.toUpperCase() === "TV"
+                  ? "TV SHOW"
+                  : stateLink.categoryTypeName.toUpperCase()
+              } FOR TITLE`}
+            />
+          </div>
+        </div>
+        <div ref={containerRef}>
           <ul className="flex flex-wrap">
-            {error && <li>Error: {error}</li>}
-            {/* Muestra las películas de la página actual */}
+            {loadingApi && loadingCards}
+            {errorApi && <li>Error: {errorApi}</li>}
             {dataToShow.map((item, index) => (
               <li
                 key={item.id}
-                className={`w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/6 p-4 ${
+                className={`w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/5 p-4 ${
                   index >= 6 ? "blurred-movie" : ""
                 }`}
               >
-                {/* Renderiza la película completa */}
                 <Cards
                   imageUrl={stateLink.urlImage + (item.poster_path || "")}
-                  title={item.title || "Title not available"}
+                  title={item.title || item.name || "Title not available"}
                   rating={item.vote_average || "Rating not available"}
                   reviews={item.vote_count || "Reviews not available"}
+                  date={item.release_date || item.first_air_date || "Release date not available"}
                   idSelection={item.id}
                 />
               </li>
             ))}
           </ul>
         </div>
-
-        {/* Contenedor para botones de paginación */}
-        <div className="pagination-container mt-12">
-          <div className="flex justify-center">
-            {/* Renderiza botones de paginación solo si hay contenido disponible */}
-            {hasPreviousPage && (
-              <button
-                onClick={() => handlePageChange(currentPage - 1)}
-                disabled={!hasPreviousPage}
-              >
-                <ArrowLeftCircleIcon className="w-12 h-12" title="Previous"/>
-              </button>
-            )}
-            {hasNextPage && (
-              <button
-                onClick={() => handlePageChange(currentPage + 1)}
-                disabled={!hasNextPage}
-              >
-                <ArrowRightCircleIcon className="w-12 h-12" title="Next"/>
-              </button>
-            )}
-          </div>
+        <div className="flex justify-center mt-12">
+          {hasPreviousPage && (
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={!hasPreviousPage}
+            >
+              <ArrowLeftCircleIcon className="w-12 h-12" title="Previous" />
+            </button>
+          )}
+          {hasNextPage && (
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={!hasNextPage}
+            >
+              <ArrowRightCircleIcon className="w-12 h-12" title="Next" />
+            </button>
+          )}
         </div>
       </div>
     </div>
