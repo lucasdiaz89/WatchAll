@@ -5,12 +5,12 @@ const urlInitial={
     url:"https://api.themoviedb.org/3/discover/",
     name:"TMDB",
     categoryTypeName:"movie",
-    categoryGenderId:"99",//"10752%7C10749%7C27", 
+    categoryGenderId:"",//"10752%7C10749%7C27", 
     params:{
-        include_adult:false,
-        include_video:false,
+        include_adult:"false",
+        include_video:"false",
         language:"en-US",
-        page:1,
+        page:"1",
         sort_by:"popularity.desc",
         whit_genres:"" 
     } ,

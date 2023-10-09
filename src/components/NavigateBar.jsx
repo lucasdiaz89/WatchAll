@@ -50,10 +50,10 @@ function NavigateBar(props) {
       filterUrlCategoryTypeName: "",
       filterUrlCategoryGenderId: "",
       filterUrlParams: {
-        include_adult: false,
-        include_video: false,
+        include_adult: "false",
+        include_video: "false",
         language: "en-US",
-        page: 1,
+        page: "1",
         sort_by: "popularity.desc",
         whit_genres: "",
       },
@@ -61,9 +61,11 @@ function NavigateBar(props) {
       filterHeaderKey:"Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiJlZThhM2Y0YmNiMTAyYTlmNWMzNDFjOTI2MzE4NDY4ZSIsInN1YiI6IjY1MTQyMWE1Y2FkYjZiMDJjMWQwMTZkOCIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ppSO9fAZwRBNBHCVa50JvbdWa9iUn1fSbm98knMcCeg",
     },
     {
-      filterUrlId: 2,
-      filterUrlName: "streaming url",
+      filterUrlId: 2,      
       urlFilter: "",
+      filterUrlName: "streaming url",
+      filterUrlCategoryTypeName: "",
+      filterUrlCategoryGenderId: "",
       params: {
         include_adult: false,
         include_video: false,

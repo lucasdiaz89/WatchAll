@@ -13,24 +13,23 @@ function BodyApp(props) {
   const containerRef = useRef(null);
   const searchRef = useRef("");
   const [stateLink, setStateLink] = useContext(ContextUrl);
-console.log("stateLink");
-  console.log(stateLink);
   const { data, loadingApi, errorApi } = useFetch(stateLink);
   const [currentPage, setCurrentPage] = useState(1);
-
+  const [blurredIndex, setBlurredIndex] = useState(5);
+  const [blurredClass, setBlurredClass] = useState("w-1/5");
   const pageSize = 20;
-  const totalPageApi=data.total_pages;
+  //const totalPageApi=data.total_pages;
 
   const [dataApi, setDataApi] = useState(data.results);
   const [filterDataApi, setFilterDataApi] = useState([]);
-  const actualPage=data.page;
-  let previousPage=0;
-  let nextPage=0;
+ // const actualPage=data.page;
+ // let previousPage=0;
+ // let nextPage=0;
 
-  if(totalPageApi>1){
-    previousPage=actualPage-1;
-    nextPage=actualPage+1;
-  }
+ // if(totalPageApi>1){
+ //   previousPage=actualPage-1;
+ //   nextPage=actualPage+1;
+ // }
  
 
   const startIndex = (currentPage - 1) * pageSize;
@@ -42,6 +41,28 @@ console.log("stateLink");
 
   const handlePageChange = (newPage) => {
     setCurrentPage(newPage);
+  };
+
+  const updateBlurredIndex = () => {
+    const screenWidth = window.innerWidth;
+    if(screenWidth < 521){
+      setBlurredIndex(1);
+      setBlurredClass("w-1/1");
+    }
+    else if(screenWidth >= 521 && screenWidth < 640){
+      setBlurredIndex(2); 
+      setBlurredClass("w-1/2")
+    }
+    else if (screenWidth >= 640 && screenWidth < 768) {
+      setBlurredIndex(3); 
+      setBlurredClass("w-1/3")
+    } else if (screenWidth >= 768 && screenWidth < 1024) {
+      setBlurredIndex(4); 
+      setBlurredClass("w-1/4")
+    } else {
+      setBlurredIndex(5);
+      setBlurredClass("w-1/5")
+    }
   };
 
   useEffect(() => {
@@ -60,7 +81,7 @@ console.log("stateLink");
       );
       blurredMovies.forEach((el) => {
         const rect = el.getBoundingClientRect();
-        const threshold = window.innerHeight * 0.5;
+        const threshold = window.innerHeight * 0.7;
         if (rect.top <= threshold) {
           el.style.filter = "blur(0px)";
           el.classList.add("blurred");
@@ -80,6 +101,15 @@ console.log("stateLink");
 
     return () => {
       window.removeEventListener("scroll", handleScroll);
+    };
+  }, []);
+
+  useEffect(() => {
+    window.addEventListener("resize", updateBlurredIndex);
+    updateBlurredIndex();
+
+    return () => {
+      window.removeEventListener("resize", updateBlurredIndex);
     };
   }, []);
 
@@ -130,8 +160,8 @@ console.log("stateLink");
             {dataToShow.map((item, index) => (
               <li
                 key={item.id}
-                className={`w-1/2 sm:w-1/3 md:w-1/4 lg:w-1/5 xl:w-1/5 p-4 ${
-                  index >= 6 ? "blurred-movie" : ""
+                className={`${blurredClass} p-4 ${
+                  index >= blurredIndex  ? "blurred-movie" : ""
                 }`}
               >
                 <Cards

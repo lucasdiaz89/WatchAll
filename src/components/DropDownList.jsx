@@ -11,8 +11,6 @@ function DropDownList(props) {
   const options = props.options;
   const urlLink = props.url;
 
-  console.log("DDL link props");
-  console.log(urlLink);
 
   useEffect(() => {
     setIsActive(false);
@@ -25,23 +23,20 @@ function DropDownList(props) {
     setIsHoverDDL(!isHoverDDL);
   };
 
-  const handleUrlLink = (urlNew, urlLink, menu) => {
-    console.log("handleURLink . urlNew urlLink . menu");
-    console.log(urlNew);
-    console.log(urlLink);
-    console.log(menu);
+  const handleUrlLink = (categoryGenderId, urlLink, menu) => {
+
     const urlChange = {
       url: urlLink.urlFilter,
       name: urlLink.filterUrlName,
       categoryTypeName: menu.categoryTypeName,
-      categoryGenderId: urlNew.categoryGenderId,
+      categoryGenderId: categoryGenderId,
       params: {
         include_adult: urlLink.filterUrlParams.include_adult,
         include_video: urlLink.filterUrlParams.include_video,
         language: urlLink.filterUrlParams.language,
         page: urlLink.filterUrlParams.page,
         sort_by: urlLink.filterUrlParams.sort_by,
-        whit_genres:  urlNew.categoryGenderId  
+        whit_genres:  categoryGenderId  
       },
       urlImage: urlLink.filterUrlImage,
       headerKey:urlLink.filterHeaderKey,
@@ -71,7 +66,7 @@ function DropDownList(props) {
                 <a
                   onClick={() => {
                     setIsActive(false);
-                    handleUrlLink(options, urlLink, menu);
+                    handleUrlLink(options.categoryGenderId, urlLink, menu);
                   }}
                   className="flex items-center px-2 py-2 "
                 >

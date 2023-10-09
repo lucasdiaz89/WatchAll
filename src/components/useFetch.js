@@ -8,8 +8,6 @@ export function useFetch(stateLink) {
  
   useEffect(() => {
 
-    console.log("entra al useEfect Fetch");
-    
     const options = {
       method: "GET",
       headers: {
@@ -18,9 +16,17 @@ export function useFetch(stateLink) {
       },
     };
     
-    stateLink.params.whit_genres = stateLink.categoryGenderId;
+    stateLink.params.whit_genres =stateLink.categoryGenderId;
     
-    const newUrl =`${stateLink.url}${stateLink.categoryTypeName}?${new URLSearchParams(stateLink.params)}`;
+    const params=new URLSearchParams(stateLink.params)
+    const newUrl =`${stateLink.url}${stateLink.categoryTypeName}?${params}`;
+
+    const obligator="include_adult="+stateLink.params.include_adult+"&include_video="+stateLink.params.include_video+"&language="+stateLink.params.language+"&page="+stateLink.params.page+"&sort_by="+stateLink.params.sort_by+"&with_genres="
+    
+    const newNewUrl=stateLink.url + stateLink.categoryTypeName+"?"+obligator+stateLink.categoryGenderId;
+
+    console.log("new URL:"+newUrl);
+    console.log("New New URL:"+newNewUrl);
     setData({ results: [] });
 
     if (newUrl !=null) {
@@ -29,7 +35,7 @@ export function useFetch(stateLink) {
       setLoadingApi(true);
       const fetchData = () => {
         setData({ results: [] });
-        fetch(newUrl, options)
+        fetch(newNewUrl, options)
           .then((response) => response.json())
           .then((json) => {
             setData(json);
@@ -41,7 +47,6 @@ export function useFetch(stateLink) {
             setLoadingApi(false);
           });
       };
-      console.log(data)
       const timeoutId = setTimeout(fetchData, delay);
       return () => clearTimeout(timeoutId);
     } else {
