@@ -8,6 +8,7 @@ import {
   ArrowLeftCircleIcon,
 } from "@heroicons/react/24/solid";
 import Loading from "./Loading";
+import ComingSoon from "./ComingSoon";
 
 function BodyApp(props) {
   const containerRef = useRef(null);
@@ -72,6 +73,10 @@ function BodyApp(props) {
 
   useEffect(() => {
     searchRef.current.value="";
+      if(dataApi.length==0)
+      {
+        console.log("vacio");
+      }
   }, [dataApi]);
 
   useEffect(() => {
@@ -116,7 +121,7 @@ function BodyApp(props) {
   const loadingCards = Array.from({ length: pageSize }, (_, index) => (
     <Loading index />
   ));
-
+ 
   const handlerFilter = (value) => {
     if (value === "") {
       setFilterDataApi(dataApi);
@@ -156,8 +161,8 @@ function BodyApp(props) {
         <div ref={containerRef}>
           <ul className="flex flex-wrap">
             {loadingApi && loadingCards}
-            {errorApi && <li>Error: {errorApi}</li>}
-            {dataToShow.map((item, index) => (
+            {errorApi && <li>{errorApi=="ComingSoon"? <ComingSoon />:""}</li>}
+            {!loadingApi && !errorApi && dataToShow.map((item, index) => (
               <li
                 key={item.id}
                 className={`${blurredClass} p-4 ${

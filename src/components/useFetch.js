@@ -29,7 +29,7 @@ export function useFetch(stateLink) {
     console.log("New New URL:"+newNewUrl);
     setData({ results: [] });
 
-    if (newUrl !=null) {
+    if (stateLink.url !="") {
       const delay = 3000;
       
       setLoadingApi(true);
@@ -55,6 +55,7 @@ export function useFetch(stateLink) {
       setLoadingApi(false);
     }
   }, [stateLink]);
+
 
   return { data, loadingApi, errorApi };
 }

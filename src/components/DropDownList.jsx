@@ -11,6 +11,9 @@ function DropDownList(props) {
   const options = props.options;
   const urlLink = props.url;
 
+console.log("DDL URL");
+console.log(urlLink);
+
 
   useEffect(() => {
     setIsActive(false);
